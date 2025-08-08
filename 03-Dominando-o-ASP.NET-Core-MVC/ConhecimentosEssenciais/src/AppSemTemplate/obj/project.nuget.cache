@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "1IzuI0rVex8=",
+  "success": true,
+  "projectFilePath": "C:\\@dcordeiro\\Projetos\\GitHub\\Formacao-desenvolvedor.Net-Desenvolvedor.io-2024-e-2025\\Dominando-o-ASP.NET-CORE-MVC\\ConhecimentosEssenciais\\src\\AppSemTemplate\\AppSemTemplate.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dcordeiro\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.302\\microsoft.net.sdk.compilers.toolset.9.0.302.nupkg.sha512"
+  ],
+  "logs": []
+}
