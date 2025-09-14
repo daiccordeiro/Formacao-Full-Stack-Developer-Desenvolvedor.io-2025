@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Usuario } from './models/usuario';
+//import { NgxBrazilValidators, MASKS } from 'ngx-brazil';
+
+
 
 @Component({
   selector: 'app-cadastro',
@@ -8,11 +11,13 @@ import { Usuario } from './models/usuario';
 })
 
 export class CadastroComponent implements OnInit{
-
   cadastroForm: FormGroup;
   usuario: Usuario;
+  formResult: string = '';
+  //MASKS = MASKS; // Importante para usar as máscaras no template
 
   
+
   // Usando FormGroup e FormControl
   /*   
    constructor() { } 
@@ -33,17 +38,25 @@ export class CadastroComponent implements OnInit{
   constructor(private fb: FormBuilder) {}
   
   ngOnInit() {
+    // Definição dos controles do formulário e suas validações
     this.cadastroForm = this.fb.group({
-      nome: [''],
-      cpf: [''],
-      email: [''],
+      nome: ['', Validators.required], // Validação do campo Nome
+      //cpf: ['', [Validators.required, NgxBrazilValidators.cpf]], // Validação de campo requerido e CPF válido
+      email: ['', [Validators.required, Validators.email]], // Validação de campo requerido e formato de email
       senha: [''],
       senhaConfirmacao: [''],
     });
   }
   
-  // Tipando o objeto usuario, com a Model Usuario
   adicionarUsuario() {
-    this.usuario = Object.assign({}, this.usuario, this.cadastroForm.value);
+    // Só processar o formulário se ele foi alterado (dirty) e é válido (valid)
+    if (this.cadastroForm.dirty && this.cadastroForm.valid) {
+      // Tipando o objeto usuario, com a Model Usuario
+      this.usuario = Object.assign({}, this.usuario, this.cadastroForm.value);
+    this.formResult = JSON.stringify(this.cadastroForm.value);
+    }
+    else {
+      this.formResult = "Não submeteu!!!"  
+    }
   }
 }
