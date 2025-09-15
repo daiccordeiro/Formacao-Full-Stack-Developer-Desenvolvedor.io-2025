@@ -6,8 +6,9 @@ import { Usuario } from './models/usuario';
 
 
 @Component({
-  selector: 'app-cadastro',
-  templateUrl: './cadastro.component.html',
+    selector: 'app-cadastro',
+    templateUrl: './cadastro.component.html',
+    standalone: false
 })
 
 export class CadastroComponent implements OnInit{
