@@ -17,8 +17,10 @@
             <div class="form-group">
                 <label class="col-md-2 control-label">CPF</label>
                 <div class="col-md-10">
-                    <!--<input class="form-control" id="cpf" type="text" placeholder="CPF (requerido)" formControlName="cpf" cpf [textMask]="{mask: MASKS.cpf.textMask}" /> -->
-                     <input class="form-control" id="cpf" type="text" placeholder="CPF (requerido)" formControlName="cpf" />        
+                    <input class="form-control" id="cpf" type="text" placeholder="CPF (requerido)" formControlName="cpf" cpf [textMask]="{mask: MASKS.cpf.textMask}" /> 
+                    <span class="text-danger" *ngIf="cadastroForm.get('cpf')?.errors?.required && (cadastroForm.get('cpf').dirty || cadastroForm.get('cpf').touched)">
+                            <p>CPF Inválido!</p>
+                    </span>         
                 </div>
             </div>
 
@@ -39,6 +41,9 @@
                 <label class="col-md-2 control-label">Senha</label>
                 <div class="col-md-10">
                     <input class="form-control" id="senha" type="password" placeholder="Senha (requerida)" formControlName="senha" />
+                    <span class="text-danger" *ngIf="cadastroForm.get('senha')?.errors?.required&& (cadastroForm.get('senha').dirty || cadastroForm.get('senha').touched)">
+                            <p>Senha é Obrigatória!</p>
+                    </span> 
                 </div>
             </div>
 
@@ -46,6 +51,11 @@
                 <label class="col-md-2 control-label">Confirme a Senha</label>
                 <div class="col-md-10">
                     <input class="form-control" id="senhaConfirmacao" type="password" placeholder="Confirme a Senha" formGroupName="senhaConfirmacao"/>
+   
+                    <!-- Erro de confirmação de senha -->
+                    <span class="text-danger" *ngIf="cadastroForm.errors?.senhaDiferente && (cadastroForm.get('senhaConfirmacao')?.dirty || cadastroForm.get('senhaConfirmacao')?.touched)">
+                        <p>As senhas não coincidem!</p>
+                    </span>
                 </div>
             </div>
 

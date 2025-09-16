@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 
+import { NgxBrazil } from 'ngx-brazil';
 
 import { AppComponent } from './app.component';
 import { MenuComponent } from './navegacao/menu/menu.component';
@@ -26,7 +27,7 @@ import { CadastroComponent } from './demos/reactiveForms/cadastro/cadastro.compo
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    //NgxBrazil, // já registra MASKS e Validators       
+    NgxBrazil,    
     [RouterModule.forRoot(rootRouterConfig, { useHash: false})]
   ],
   providers: [
