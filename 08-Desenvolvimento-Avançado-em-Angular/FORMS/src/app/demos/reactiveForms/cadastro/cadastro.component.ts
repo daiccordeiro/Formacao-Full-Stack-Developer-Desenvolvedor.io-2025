@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators, ReactiveFormsModule, ValidationErrors, AbstractControl } from '@angular/forms';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormControlName } from '@angular/forms';
 import { Usuario } from './models/usuario';
 import { NgxBrazilValidators, NgxBrazilMASKS } from 'ngx-brazil';
+import { DisplayMessage, GenericValidator, ValidationMessages } from './generic-form-validation'; 
+import { fromEvent, merge, Observable } from 'rxjs';
+import { CustomValidators } from './custom-validators'; // Meus validadores customizados
+
 
 @Component({
     selector: 'app-cadastro',
@@ -9,13 +13,19 @@ import { NgxBrazilValidators, NgxBrazilMASKS } from 'ngx-brazil';
     standalone: false
 })
 
-export class CadastroComponent implements OnInit{
+export class CadastroComponent implements OnInit, AfterViewInit {
+
+  @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
+
   cadastroForm: FormGroup;
   usuario: Usuario;
   formResult: string = '';  
   MASKS = NgxBrazilMASKS;
   
-
+  validationMessages: ValidationMessages;
+  genericValidator: GenericValidator;
+  displayMessage: DisplayMessage = {};
+  
   // Usando FormGroup e FormControl
   /*   
    constructor() { } 
@@ -33,31 +43,55 @@ export class CadastroComponent implements OnInit{
   */
 
   // Usando FormBuilder
-  constructor(private fb: FormBuilder) {}
-  
-  ngOnInit() {
-  /* Não funciona no Angular 19
-    let senha = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]);
-    let senhaConfirm = new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(15), equalTo(senha)]);
- */
- 
+  constructor(private fb: FormBuilder) {
+    this.validationMessages = {
+      nome: {
+        required: 'O Nome é requerido',
+        minlength: 'O Nome precisa ter no mínimo 2 caracteres',
+        maxlength: 'O Nome precisa ter no máximo 150 caracteres'
+      },
+      cpf: {
+        required: 'Informe o CPF',
+        cpf: 'CPF em formato Inválido'
+      },
+      email: {
+        required: 'Informe o e-mail',
+        email: 'Email Inválido'
+      },
+      senha: {
+        required: 'Informe a senha',
+        rangeLength: 'A senha deve possuir entre 6 e 15 caracteres'
+      },
+      senhaConfirmacao: {
+        required: 'Informe a senha novamente',
+        rangeLength: 'A senha deve possuir entre 6 e 15 caracteres',
+        equalTo: 'As senhas não conferem'
+      }
+    };
+
+    this.genericValidator = new GenericValidator(this.validationMessages);
+  }
+    
+  ngOnInit() { 
     // Definição dos controles do formulário e suas validações
     this.cadastroForm = this.fb.group({
       nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]], // Validação do campo Nome
       cpf: ['', [Validators.required, NgxBrazilValidators.cpf]], // Validação de campo requerido e CPF válido
       email: ['', [Validators.required, Validators.email]], // Validação de campo requerido e formato de email
-      senha: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]),
-      senhaConfirmacao: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)])}, 
-      { validators: this.senhaIgualValidator 
+      senha: ['', [Validators.required, CustomValidators.rangeLength(6,15)]], 
+      senhaConfirmacao: ['', [Validators.required, CustomValidators.rangeLength(6,15), CustomValidators.equalTo('senha')]]
     });
   }
   
-  // Para validar as senhas nativamente  
-  senhaIgualValidator(group: AbstractControl): ValidationErrors | null {
-    const senha = group.get('senha')?.value;
-    const senhaConfirm = group.get('senhaConfirmacao')?.value;
+  
+  ngAfterViewInit(): void {
+    let controlBlurs: Observable<any>[] = this.formInputElements
+    .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
-    return senha && senhaConfirm && senha !== senhaConfirm ? { senhaDiferente: true } : null;
+    // Evento disparado toda vez que 'perco' o foco do controle do formulário  
+    merge(...controlBlurs).subscribe(() => {
+      this.displayMessage = this.genericValidator.processarMensagens(this.cadastroForm);
+    });
   }
 
 
@@ -66,7 +100,7 @@ export class CadastroComponent implements OnInit{
     if (this.cadastroForm.dirty && this.cadastroForm.valid) {
       // Tipando o objeto usuario, com a Model Usuario
       this.usuario = Object.assign({}, this.usuario, this.cadastroForm.value);
-    this.formResult = JSON.stringify(this.cadastroForm.value);
+      this.formResult = JSON.stringify(this.cadastroForm.value);
     }
     else {
       this.formResult = "Não submeteu!!!"  

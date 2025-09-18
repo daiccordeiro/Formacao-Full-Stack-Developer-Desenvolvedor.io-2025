@@ -4,15 +4,16 @@ import { RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 
-import { NgxBrazil } from 'ngx-brazil';
-
 import { AppComponent } from './app.component';
 import { MenuComponent } from './navegacao/menu/menu.component';
 import { HomeComponent } from './navegacao/home/home.component';
 import { FooterComponent } from './navegacao/footer/footer.component';
 import { SobreComponent } from './institucional/sobre/sobre.component';
-import { rootRouterConfig } from './app.routes';
 import { CadastroComponent } from './demos/reactiveForms/cadastro/cadastro.component';
+
+import { rootRouterConfig } from './app.routes';
+
+import { NgxBrazil } from 'ngx-brazil';
 
 @NgModule({
   declarations: [
@@ -24,11 +25,11 @@ import { CadastroComponent } from './demos/reactiveForms/cadastro/cadastro.compo
     CadastroComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule,   
     FormsModule,
     ReactiveFormsModule,
     NgxBrazil,    
-    [RouterModule.forRoot(rootRouterConfig, { useHash: false})]
+    [RouterModule.forRoot(rootRouterConfig, { useHash: false})]    
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}   
