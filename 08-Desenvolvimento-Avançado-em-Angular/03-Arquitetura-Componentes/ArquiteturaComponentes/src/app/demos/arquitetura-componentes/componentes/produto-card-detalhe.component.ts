@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, output } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import para usar ngIf, ngSwitch, pipes...
 
 import { Produto } from '../models/produto';
@@ -13,4 +13,11 @@ import { Produto } from '../models/produto';
 
     @Input()
     produto: Produto; 
+
+    @Output()
+    status: EventEmitter<any> =  new EventEmitter();
+
+    emitirEvento(){ 
+      this.status.emit(this.produto);
+    }
   }
