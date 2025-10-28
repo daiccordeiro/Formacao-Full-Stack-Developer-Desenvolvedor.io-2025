@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren, QueryList} from '@angular/core';
 import { Produto } from '../models/produto';
+import { Observable, fromEvent } from 'rxjs';
 
 // Imports para usar ngIf, ngSwitch, pipes...
 import { CommonModule } from '@angular/common'; 
@@ -12,11 +13,15 @@ import { ProdutoCountComponent } from "../componentes/produto-count.component";
   styles: [],
   imports: [CommonModule, ProdutoDetalheComponent, ProdutoCountComponent],  
 })
-export class ProdutoDashboardComponent implements OnInit {
-
+export class ProdutoDashboardComponent implements OnInit, AfterViewInit {
   produtos: Produto[]
 
-  constructor() { }
+  @ViewChild(ProdutoCountComponent, { static: false }) contador: ProdutoCountComponent;
+  @ViewChild('teste', { static: false }) mensagemTela: ElementRef; 
+  
+  @ViewChildren(ProdutoDetalheComponent) botoes: QueryList<ProdutoDetalheComponent>;
+
+  constructor() { } 
 
   ngOnInit() {
     this.produtos = [{
@@ -63,6 +68,22 @@ export class ProdutoDashboardComponent implements OnInit {
     }];
   }
   
+   ngAfterViewInit(): void {
+
+    console.log('Objeto do Contador: ', this.contador.produtos);
+
+    let clickTexto: Observable<any> = fromEvent(this.mensagemTela.nativeElement,'click');
+    clickTexto.subscribe(() =>{
+      alert('clicou no texto!');
+      return;
+    });
+
+    console.log(this.botoes);
+    this.botoes.forEach(p => {
+      console.log(p.produto);
+    });
+  }
+
   mudarStatus(event: Produto){
     event.ativo = !event.ativo;
   }
