@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren, 
 import { Produto } from '../models/produto';
 import { Observable, fromEvent } from 'rxjs';
 
-// Imports para usar ngIf, ngSwitch, pipes...
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';  // Imports para usar ngIf, ngSwitch, pipes...
+
 import { ProdutoDetalheComponent } from "../componentes/produto-card-detalhe.component";
 import { ProdutoCountComponent } from "../componentes/produto-count.component";
 

@@ -1,12 +1,15 @@
-import { Component, Input, Output, EventEmitter, output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import para usar ngIf, ngSwitch, pipes...
 
 import { Produto } from '../models/produto';
 
+import { RouterModule } from '@angular/router'; // Import para usar o RouterLink no html do produto-card-detalhe
+
+
 @Component({
     selector: 'produto-card-detalhe',
     templateUrl: './produto-card-detalhe.component.html',
-    imports: [CommonModule],  
+    imports: [CommonModule, RouterModule],  
   })
   
   export class ProdutoDetalheComponent { 

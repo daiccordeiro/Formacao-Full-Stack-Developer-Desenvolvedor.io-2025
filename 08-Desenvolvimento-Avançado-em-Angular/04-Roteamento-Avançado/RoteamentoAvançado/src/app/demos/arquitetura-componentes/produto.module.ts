@@ -8,8 +8,10 @@ registerLocaleData(localePt);
 import { ProdutoDashboardComponent } from './produto-dashboard/produto-dashboard.component';
 import { ProdutoDetalheComponent } from './componentes/produto-card-detalhe.component';
 import { ProdutoCountComponent } from './componentes/produto-count.component';
+import { EditarProdutoComponent } from './editar-produto/editar-produto.component';
 
 import { ProdutoRoutingModule } from './produto-dashboard/produto.route';
+import { ProdutoAppComponent } from './produto.app.component';
 
 @NgModule({
     declarations: [
@@ -20,7 +22,9 @@ import { ProdutoRoutingModule } from './produto-dashboard/produto.route';
         // quando standalone: true, trazemos o módulo no imports
         ProdutoDashboardComponent, 
         ProdutoDetalheComponent,    
-        ProdutoCountComponent    
+        ProdutoCountComponent,
+        EditarProdutoComponent,
+        ProdutoAppComponent    
     ],
     exports: []
 })

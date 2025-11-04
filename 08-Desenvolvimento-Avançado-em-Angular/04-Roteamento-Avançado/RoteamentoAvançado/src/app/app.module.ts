@@ -29,7 +29,7 @@ import { AppRoutingModule } from './app.routes';
     AppRoutingModule    
   ],
   providers: [
-    {provide: APP_BASE_HREF, useValue: '/'}   
+    //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas     
   ],
   bootstrap: [AppComponent]
 })
