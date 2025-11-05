@@ -10,14 +10,15 @@ import { ProdutoDetalheComponent } from './componentes/produto-card-detalhe.comp
 import { ProdutoCountComponent } from './componentes/produto-count.component';
 import { EditarProdutoComponent } from './editar-produto/editar-produto.component';
 
-import { ProdutoRoutingModule } from './produto-dashboard/produto.route';
+import { ProdutoRoutingModule } from './produto.route';
 import { ProdutoAppComponent } from './produto.app.component';
+import { ProdutoService } from './services/produto.services';
 
 @NgModule({
     declarations: [
     ],
     imports: [
-        CommonModule,
+        CommonModule,        
         ProdutoRoutingModule,
         // quando standalone: true, trazemos o módulo no imports
         ProdutoDashboardComponent, 
@@ -25,6 +26,9 @@ import { ProdutoAppComponent } from './produto.app.component';
         ProdutoCountComponent,
         EditarProdutoComponent,
         ProdutoAppComponent    
+    ],
+    providers:[
+        ProdutoService // Para ser injetado por dependência
     ],
     exports: []
 })
