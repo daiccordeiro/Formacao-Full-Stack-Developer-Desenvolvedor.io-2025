@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import para usar ngIf, ngSwitch, pipes...
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProdutoService } from '../services/produto.services';
+import { ProdutoService } from '../services/produto.service';
 import { Produto } from '../models/produto';
 
 

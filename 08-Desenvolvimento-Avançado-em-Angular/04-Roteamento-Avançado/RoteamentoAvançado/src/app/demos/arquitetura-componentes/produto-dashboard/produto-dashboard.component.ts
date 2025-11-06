@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';  // Imports para usar ngIf, ngSw
 
 import { ProdutoDetalheComponent } from "../componentes/produto-card-detalhe.component";
 import { ProdutoCountComponent } from "../componentes/produto-count.component";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-produto-dashboard',  
@@ -21,51 +22,12 @@ export class ProdutoDashboardComponent implements OnInit, AfterViewInit {
   
   @ViewChildren(ProdutoDetalheComponent) botoes: QueryList<ProdutoDetalheComponent>;
 
-  constructor() { } 
+
+  constructor(private route: ActivatedRoute) { } 
 
   ngOnInit() {
-    this.produtos = [{
-      id: 1,
-      nome: 'Teste',
-      ativo: true,
-      valor: 100,
-      imagem: 'celular.jpg'
-    },
-    {
-      id: 2,
-      nome: 'Teste 2',
-      ativo: true,
-      valor: 200,
-      imagem: 'gopro.jpg'
-    },
-    {
-      id: 3,
-      nome: 'Teste 3',
-      ativo: true,
-      valor: 300,
-      imagem: 'laptop.jpg'
-    },
-    {
-      id: 4,
-      nome: 'Teste 4',
-      ativo: true,
-      valor: 400,
-      imagem: 'mouse.jpg'
-    },
-    {
-      id: 5,
-      nome: 'Teste 5',
-      ativo: true,
-      valor: 500,
-      imagem: 'teclado.jpg'
-    },
-    {
-      id: 6,
-      nome: 'Teste 6',
-      ativo: false,
-      valor: 600,
-      imagem: 'headset.jpg'
-    }];
+    this.produtos = this.route.snapshot.data['produtos'];
+    // substituindo a coleção de produtos, trazendo os dados direto da rota, com o ActivatedRoute
   }
   
    ngAfterViewInit(): void {

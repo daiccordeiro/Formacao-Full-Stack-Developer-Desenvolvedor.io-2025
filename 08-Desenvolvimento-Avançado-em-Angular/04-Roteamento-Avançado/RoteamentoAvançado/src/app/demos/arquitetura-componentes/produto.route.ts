@@ -5,12 +5,14 @@ import { EditarProdutoComponent } from "./editar-produto/editar-produto.componen
 import { ProdutoAppComponent } from "./produto.app.component";
 
 import { Routes, RouterModule } from "@angular/router";
+import { ProdutosResolve } from "./services/produto.resolve";
 
 
 const produtoRouterConfig: Routes = [
     { path: '', component: ProdutoAppComponent, 
         children:[
-            { path: '', component: ProdutoDashboardComponent }, 
+            { path: '', redirectTo: 'todos', pathMatch: 'full' }, 
+            { path: ':estado', component: ProdutoDashboardComponent, resolve: { produtos: ProdutosResolve }}, 
             { path: 'editar/:id', component: EditarProdutoComponent }
         ] 
     },    

@@ -12,7 +12,10 @@ import { EditarProdutoComponent } from './editar-produto/editar-produto.componen
 
 import { ProdutoRoutingModule } from './produto.route';
 import { ProdutoAppComponent } from './produto.app.component';
-import { ProdutoService } from './services/produto.services';
+
+// Injetados
+import { ProdutoService } from './services/produto.service';
+import { ProdutosResolve } from './services/produto.resolve';
 
 @NgModule({
     declarations: [
@@ -28,7 +31,8 @@ import { ProdutoService } from './services/produto.services';
         ProdutoAppComponent    
     ],
     providers:[
-        ProdutoService // Para ser injetado por dependência
+        ProdutoService, // Para ser injetado por dependência
+        ProdutosResolve // também é um serviço como o ProdutoService
     ],
     exports: []
 })
