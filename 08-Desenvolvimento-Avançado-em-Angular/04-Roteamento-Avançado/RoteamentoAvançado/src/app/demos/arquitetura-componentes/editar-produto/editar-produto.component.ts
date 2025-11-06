@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import para usar ngIf, ngSwitch, pipes...
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProdutoService } from '../services/produto.services';
 import { Produto } from '../models/produto';
 
@@ -19,7 +19,8 @@ export class EditarProdutoComponent implements OnInit {
   
   constructor(
     private route: ActivatedRoute,            // Pega dados da rota ATIVA
-    private produtoService: ProdutoService){ }
+    private produtoService: ProdutoService,
+    private router: Router){ }
   
   ngOnInit() {
     this.route.params
@@ -28,5 +29,9 @@ export class EditarProdutoComponent implements OnInit {
       });    
   }
   
-  salvar(){}
+  salvar(){
+    // fazer comunicação com o backend
+
+    this.router.navigate(['/produtos']); // navegação imperativa
+  }
 }
