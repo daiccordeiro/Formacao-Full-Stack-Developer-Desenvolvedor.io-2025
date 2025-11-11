@@ -28,6 +28,7 @@ export class ProdutoDashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.produtos = this.route.snapshot.data['produtos'];
     // substituindo a coleção de produtos, trazendo os dados direto da rota, com o ActivatedRoute
+    console.log(this.route.snapshot.data['teste']);
   }
   
    ngAfterViewInit(): void {
