@@ -6,6 +6,7 @@ import { CadastroComponent } from './demos/reactiveForms/cadastro/cadastro.compo
 import { NotFoundComponent } from './navegacao/not-found/not-found.component';
 
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from './services/app.guard';
 
 
 const rootRouterConfig: Routes = [
@@ -16,6 +17,10 @@ const rootRouterConfig: Routes = [
     { path: 'produtos', 
             loadChildren: () => import('./demos/arquitetura-componentes/produto.module')
             .then(m => m.ProdutoModule)},  //Lazy Loading   
+   { path: 'admin', 
+            loadChildren: () => import('./admin/admin.module')
+            .then(m => m.AdminModule),
+            canMatch: [AuthGuard], canActivate: [AuthGuard] },  //substituido canLoad - depreciado no Angular 19               
     
     // Sempre deixar essa configuração por ÚLTIMO
     { path: '**', component: NotFoundComponent}                   
