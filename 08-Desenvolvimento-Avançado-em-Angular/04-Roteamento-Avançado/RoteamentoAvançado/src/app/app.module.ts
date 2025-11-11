@@ -13,6 +13,7 @@ import { NavegacaoModule } from './navegacao/navegacao.module';
 
 import { AppRoutingModule } from './app.routes';
 import { AuthGuard } from './services/app.guard';
+import { CadastroGuard } from './services/cadastro.guard';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AuthGuard } from './services/app.guard';
   ],
   providers: [
     //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas 
-    AuthGuard    
+    AuthGuard,
+    CadastroGuard    
   ],
   bootstrap: [AppComponent]
 })

@@ -42,6 +42,8 @@ export class CadastroComponent implements OnInit, AfterViewInit {
     }
   */
 
+ mudancasNaoSalvas: boolean;
+
   // Usando FormBuilder
   constructor(private fb: FormBuilder) {
     this.validationMessages = {
@@ -91,6 +93,7 @@ export class CadastroComponent implements OnInit, AfterViewInit {
     // Evento disparado toda vez que 'perco' o foco do controle do formulário  
     merge(...controlBlurs).subscribe(() => {
       this.displayMessage = this.genericValidator.processarMensagens(this.cadastroForm);
+      this.mudancasNaoSalvas =  true;
     });
   }
 
@@ -101,6 +104,8 @@ export class CadastroComponent implements OnInit, AfterViewInit {
       // Tipando o objeto usuario, com a Model Usuario
       this.usuario = Object.assign({}, this.usuario, this.cadastroForm.value);
       this.formResult = JSON.stringify(this.cadastroForm.value);
+
+      this.mudancasNaoSalvas =  false;
     }
     else {
       this.formResult = "Não submeteu!!!"  
