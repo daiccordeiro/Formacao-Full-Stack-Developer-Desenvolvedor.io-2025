@@ -1,8 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 //import { RouterModule } from '@angular/router';
-import { APP_BASE_HREF } from '@angular/common';
+//import { APP_BASE_HREF } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
+
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt);
 
 import { NgxBrazil } from 'ngx-brazil';
 
@@ -14,12 +18,13 @@ import { NavegacaoModule } from './navegacao/navegacao.module';
 import { AppRoutingModule } from './app.routes';
 import { AuthGuard } from './services/app.guard';
 import { CadastroGuard } from './services/cadastro.guard';
+import { FilmesComponent } from './demos/pipes/filmes/filmes.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SobreComponent,
-    CadastroComponent
+    CadastroComponent    
   ],
   imports: [
     BrowserModule,   
@@ -28,7 +33,8 @@ import { CadastroGuard } from './services/cadastro.guard';
     NgxBrazil,    
     NavegacaoModule,
    // [RouterModule.forRoot(rootRouterConfig, { useHash: false})], // Substituido pelo Modulo de Roteamento [AppRoutingModule]    
-    AppRoutingModule    
+    AppRoutingModule,
+    FilmesComponent    
   ],
   providers: [
     //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas 
