@@ -19,6 +19,7 @@ import { AppRoutingModule } from './app.routes';
 import { AuthGuard } from './services/app.guard';
 import { CadastroGuard } from './services/cadastro.guard';
 import { FilmesComponent } from './demos/pipes/filmes/filmes.component';
+import { FileSizePipe } from './demos/pipes/filmes/filesize.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { FilmesComponent } from './demos/pipes/filmes/filmes.component';
     NavegacaoModule,
    // [RouterModule.forRoot(rootRouterConfig, { useHash: false})], // Substituido pelo Modulo de Roteamento [AppRoutingModule]    
     AppRoutingModule,
-    FilmesComponent    
+    FilmesComponent,
+    FileSizePipe    
   ],
   providers: [
     //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas 

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Imports para usar ngIf, ngSwitch, pipes...
+
 import { Filme } from './filme';
-import { CommonModule } from '@angular/common';  // Imports para usar ngIf, ngSwitch, pipes...
+import { FileSizePipe } from "./filesize.pipe";  
 
 @Component({
   selector: 'app-filmes',
   templateUrl: './filmes.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, FileSizePipe]
 })
 
 export class FilmesComponent implements OnInit {
