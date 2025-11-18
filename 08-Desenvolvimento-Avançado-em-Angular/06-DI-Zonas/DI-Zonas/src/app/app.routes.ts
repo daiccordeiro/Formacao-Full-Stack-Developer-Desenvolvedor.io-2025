@@ -10,6 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './services/app.guard';
 import { CadastroGuard } from './services/cadastro.guard';
 import { FilmesComponent } from './demos/pipes/filmes/filmes.component';
+import { BarComponent } from './demos/bar-di-zones/bar.component';
 
 
 const rootRouterConfig: Routes = [
@@ -25,7 +26,7 @@ const rootRouterConfig: Routes = [
             .then(m => m.AdminModule),
             canMatch: [AuthGuard], canActivate: [AuthGuard] },  //substituido canLoad - depreciado no Angular 19               
     { path: 'filmes', component: FilmesComponent},
-
+    { path: 'bar', component: BarComponent },
     
     // Sempre deixar essa configuração por ÚLTIMO
     { path: '**', component: NotFoundComponent}                   

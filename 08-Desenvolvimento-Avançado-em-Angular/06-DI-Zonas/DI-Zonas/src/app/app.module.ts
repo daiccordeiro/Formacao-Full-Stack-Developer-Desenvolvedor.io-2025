@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Provider } from '@angular/core';
 //import { RouterModule } from '@angular/router';
 //import { APP_BASE_HREF } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
@@ -22,6 +22,14 @@ import { FilmesComponent } from './demos/pipes/filmes/filmes.component';
 import { FileSizePipe } from './demos/pipes/filmes/filesize.pipe';
 import { ImageFormaterPipe } from './demos/pipes/filmes/image.pipe';
 
+import { BarModule } from './demos/bar-di-zones/bar.module';
+import { BarServices } from './demos/bar-di-zones/bar.service';
+
+
+export const BAR_PROVIDERS: Provider[] = [
+  BarServices
+];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,12 +46,14 @@ import { ImageFormaterPipe } from './demos/pipes/filmes/image.pipe';
     AppRoutingModule,
     FilmesComponent,
     FileSizePipe,
-    ImageFormaterPipe    
+    ImageFormaterPipe,
+    BarModule    
   ],
   providers: [
     //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas 
     AuthGuard,
-    CadastroGuard    
+    CadastroGuard 
+    //BAR_PROVIDERS // usaremos a Injeção de Dependência: useClass
   ],
   bootstrap: [AppComponent]
 })
