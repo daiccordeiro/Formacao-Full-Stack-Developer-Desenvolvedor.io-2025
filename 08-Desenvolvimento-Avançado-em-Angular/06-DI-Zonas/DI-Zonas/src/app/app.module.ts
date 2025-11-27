@@ -47,7 +47,12 @@ export const BAR_PROVIDERS: Provider[] = [
     FilmesComponent,
     FileSizePipe,
     ImageFormaterPipe,
-    BarModule    
+    
+    BarModule.forRoot({
+      unidadeId: 1000,
+      unidadeToken: 'eca938c99a0e9ff91029dc'
+    })
+        
   ],
   providers: [
     //{provide: APP_BASE_HREF, useValue: '/'} // alterado para usar SubRotas 

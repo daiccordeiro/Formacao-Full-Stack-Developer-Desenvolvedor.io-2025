@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { BarServices, BarServicesMock } from './bar.service';
+import { BAR_UNIDADE_CONFIG, BarUnidadeConfig } from './bar.config';
 
 @Component({
   standalone: true,
@@ -13,12 +14,21 @@ import { BarServices, BarServicesMock } from './bar.service';
 })
 
 export class BarComponent {   
+  
+  ConfigManual: BarUnidadeConfig
+  Config: BarUnidadeConfig
   barBedida1: string;
 
-  constructor (private barServices: BarServices){}
+  constructor (
+    private barServices: BarServices,
+    @Inject('ConfigManualUnidade') private ApiConfigManual: BarUnidadeConfig,
+    @Inject(BAR_UNIDADE_CONFIG) private ApiConfig: BarUnidadeConfig,
+    ) { }
 
 
   ngOnInit(): void {
     this.barBedida1 = this.barServices.obterBebidas();
+    this.ConfigManual = this.ApiConfigManual;
+    this.Config = this.ApiConfig;
   }    
 }
