@@ -31,3 +31,8 @@ export class BarServicesMock {
   obterPorcoes(): string { return 'Mock'; }
   obterRefeicoes(): string { return 'Mock'; }
 }
+
+// Abstração, representando o método [obterBebidas]
+export abstract class BebidaService {
+  obterBebidas: () => string
+}
