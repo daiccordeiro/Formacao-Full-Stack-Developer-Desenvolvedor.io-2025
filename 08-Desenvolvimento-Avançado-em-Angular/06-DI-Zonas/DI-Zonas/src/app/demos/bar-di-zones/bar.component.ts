@@ -1,13 +1,14 @@
-import { Component, Inject, Injector } from '@angular/core';
+import { Component, Inject, Injector, NgZone } from '@angular/core';
 import { BarFactory, BarServices, BarServicesMock, BebidaService } from './bar.service';
 import { BAR_UNIDADE_CONFIG, BarUnidadeConfig } from './bar.config';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-bar',
   templateUrl: './bar.component.html',
-  imports: [],
+  imports: [CommonModule],
   providers:[   
     //{ provide: BarServices, useClass: BarServicesMock }, // para testar
     //{ provide: BarServices, useClass: BarServices },
@@ -32,7 +33,8 @@ export class BarComponent {
     private barServices: BarServices,
     @Inject('ConfigManualUnidade') private ApiConfigManual: BarUnidadeConfig,
     @Inject(BAR_UNIDADE_CONFIG) private ApiConfig: BarUnidadeConfig,
-    private bebidaService : BebidaService
+    private bebidaService : BebidaService,
+    private ngZone: NgZone
     ) { }
 
 
@@ -44,4 +46,36 @@ export class BarComponent {
 
     this.barBebida2 = this.bebidaService.obterBebidas();
   }    
+
+
+  //ngZone
+  public progress: number = 0;
+  public label: string;
+
+  processWithinAngularZone() {
+    this.label = 'dentro';
+    this.progress = 0;
+    this._increaseProgress(() => console.log('Finalizado por DENTRO do Angular!')); //Callback
+  }
+
+  processOutsideOfAngularZone() {
+    this.label = 'fora';
+    this.progress = 0;
+    this.ngZone.runOutsideAngular(() => {
+      this._increaseProgress(() => {
+        this.ngZone.run(() => { console.log('Finalizado por FORA do Angular!'); }); //Callback
+      });
+    });
+  }
+
+  _increaseProgress(doneCallback: () => void) {
+    this.progress += 1;
+    console.log(`Progresso atual: ${this.progress}%`);
+
+    if (this.progress < 100) {
+      window.setTimeout(() => this._increaseProgress(doneCallback), 10);
+    } else {
+      doneCallback();
+    }
+  }
 }
