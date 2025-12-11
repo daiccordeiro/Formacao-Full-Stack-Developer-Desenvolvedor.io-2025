@@ -1,4 +1,4 @@
-#Desenvolvimento Avançado em Angular
+# Desenvolvimento Avançado em Angular
 
 ![Angular](https://img.shields.io/badge/Angular-19-DD0031?logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
@@ -11,7 +11,7 @@ Repositório contendo todos os projetos desenvolvidos ao longo do meu módulo de
 ---
 
 
-#Índice
+# Índice
 
 - [01 — RXJS Observables](#01--rxjs-observables)
 - [02 — Reactive Forms](#02--reactive-forms)
@@ -20,13 +20,13 @@ Repositório contendo todos os projetos desenvolvidos ao longo do meu módulo de
 - [05 — Pipes Customizados](#05--pipes-customizados)
 - [06 — DI e Zonas](#06--di--zonas)
 - [07 — Gerenciamento de Estado com RxJS](#07--gerenciamento-de-estado-com-rxjs)
-- [Tecnologias](#-tecnologias)
-- [Objetivo do Módulo](#-objetivo-do-módulo)
+- [Tecnologias](#tecnologias)
+- [Objetivo do Módulo](#objetivo-do-módulo)
 
 ---
 
 
-#01 — RXJS Observables
+# 01 — RXJS Observables
 > Introdução ao paradigma reativo no Angular.
 
 Conteúdos estudados:
@@ -36,7 +36,7 @@ Conteúdos estudados:
 
 ---
 
-#02 — Reactive Forms
+# 02 — Reactive Forms
 > Construção e gestão de formulários reativos.
 
 Inclui:
@@ -46,7 +46,7 @@ Inclui:
 
 ---
 
-#03 — Arquitetura de Componentes
+# 03 — Arquitetura de Componentes
 > Boas práticas e estruturação de aplicações Angular.
 
 Conteúdos:
@@ -56,7 +56,7 @@ Conteúdos:
 
 ---
 
-#04 — Roteamento Avançado
+# 04 — Roteamento Avançado
 > Criação de navegação avançada e dinâmica.
 
 Estudo de:
@@ -66,7 +66,7 @@ Estudo de:
 
 ---
 
-#05 — Pipes Customizados
+# 05 — Pipes Customizados
 > Transformação personalizada de dados na interface.
 
 Inclui:
@@ -76,7 +76,7 @@ Inclui:
 
 ---
 
-#06 — DI & Zonas
+# 06 — DI & Zonas
 > Funcionamento interno da Injeção de Dependência e do NgZone.
 
 Conteúdos:
@@ -87,7 +87,7 @@ Conteúdos:
 
 ---
 
-#07 — Gerenciamento de Estado com RxJS
+# 07 — Gerenciamento de Estado com RxJS
 > Store reativa sem necessidade de NgRx.
 
 Conteúdos:
@@ -98,7 +98,7 @@ Conteúdos:
 
 ---
 
-#Tecnologias
+# Tecnologias
 - Angular  
 - TypeScript  
 - RxJS  
@@ -106,7 +106,8 @@ Conteúdos:
 
 ---
 
-#Objetivo do Módulo
+# Objetivo do Módulo
+
 Consolidar conhecimentos essenciais e avançados do ecossistema Angular, evoluindo de fundamentos reativos para arquitetura e gerenciamento de estado, construindo uma base sólida para aplicações modernas e escaláveis.
 
 ---
