@@ -29,7 +29,7 @@ import { TodoComponent } from './todo.component';
   ],
     providers: [
     provideHttpClient(),
-    TasksService       
+    TasksService           
   ]
 })
 
