@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Task } from "../../task";
 import { CommonModule } from '@angular/common';
+import { ITask } from "../../task";
 
 @Component({
   selector: 'todo-list',
@@ -11,5 +11,5 @@ import { CommonModule } from '@angular/common';
 export class ToDoListComponent {
 
   @Input()
-  list: Task[];
+  list: ITask[];
 }

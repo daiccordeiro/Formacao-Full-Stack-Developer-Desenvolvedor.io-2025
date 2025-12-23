@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';  // Imports para usar ngIf, ngSwitch, pipes...
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ToDoListComponent } from "../todo-list/todo-list.component";
 import { TasksService } from '../../todo.service';
+import { Store } from '../../todo.store';
 
 @Component({
   selector: 'tasks-iniciadas',
@@ -12,11 +14,15 @@ import { TasksService } from '../../todo.service';
 })
 export class TasksIniciadasComponent implements OnInit {
   
-  iniciadas$: Observable<any[]>
+  iniciados$: Observable<any[]>;
 
-  constructor(private taskService: TasksService) {}
+  constructor(private taskService: TasksService, private store: Store) {}
 
   ngOnInit() { 
-    this.iniciadas$ =  this.taskService.getToDoList();
+    //this.iniciados$ =  this.taskService.getToDoList();
+    this.iniciados$ =  this.store.getTodoList()
+      .pipe(
+        map(todolist => todolist.filter(task => task.iniciado && !task.finalizado))
+    );
   }
 }

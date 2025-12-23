@@ -72,7 +72,10 @@ O projeto utiliza um arquivo JSON para simular uma fonte de dados local durante 
 }
 ```
 - O arquivo é usado pelo json-server para criar um backend fake:
-`json-server --watch todo.db.json`
+```
+cd .\src\app\demos\todo-list\ 
+json-server todo.db.json
+```
 ---
 
 ## Preview do projeto
