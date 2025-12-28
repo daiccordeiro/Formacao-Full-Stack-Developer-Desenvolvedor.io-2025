@@ -25,4 +25,8 @@ export class TasksIniciadasComponent implements OnInit {
         map(todolist => todolist.filter(task => task.iniciado && !task.finalizado))
     );
   }
+
+   onToggle(event){
+    this.taskService.toggle(event);
+  }
 }
