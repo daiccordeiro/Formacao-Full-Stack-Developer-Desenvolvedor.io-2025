@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ITask } from "../../task";
-//import { EventEmitter } from 'stream';
+import { TasksService } from '../../todo.service';
 
 @Component({
   selector: 'todo-list',
@@ -10,6 +10,8 @@ import { ITask } from "../../task";
   styleUrls: ['todo-list.component.css']  
 })
 export class ToDoListComponent {
+
+  constructor(private tasksService: TasksService){}
 
   @Input()
   list: ITask[];
@@ -42,5 +44,9 @@ export class ToDoListComponent {
     this.toggle.emit({
       task: { ...task }
     });
+  }
+
+  excluir(id: number) {
+    this.tasksService.remover(id);
   }
 }

@@ -44,4 +44,32 @@ export class TasksService {
         this.store.set('todolist', todolist);
       })
   }
+
+// Desafio Final do Módulo: Adicionar uma Caixa com botão Adicionar e Remover
+  adicionar(task: ITask) {
+    const novaTask: Omit<ITask, 'id'> = {
+      ...task,
+      finalizado: false,
+      iniciado: false
+    };
+
+    this.http
+      .post<ITask>('http://localhost:3000/todolist', novaTask)
+      .subscribe((taskCriada) => {
+
+        const value = this.store.value.todolist;        
+        this.store.set('todolist', [...value, taskCriada]);
+      });
+  }
+
+  remover(id: number) {
+    this.http
+      .delete(`http://localhost:3000/todolist/${id}`)
+      .subscribe(() => {
+
+        const value = this.store.value.todolist.filter(item => item.id !== id);
+
+        this.store.set('todolist', value);
+      });
+  }
 }
