@@ -6,6 +6,8 @@ import { tap } from "rxjs/operators";
 import { ITask } from './task';
 import { Store } from './todo.store';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable()
 export class TasksService {
   //getTodoList$: any;
@@ -19,8 +21,9 @@ export class TasksService {
   
   // Adicionei o $ para ficar igual da aula [getTodoList$:]  
   getTodoList$(): Observable<ITask[]>{
-    return this.http
-      .get<ITask[]>('http://localhost:3000/todolist')
+    return this.http      
+      /*.get<ITask[]>('http://localhost:3000/todolist')*/
+      .get<ITask[]>(`${environment.apiUrl}/todolist`)
       .pipe(
         tap(next => this.store.set('todolist', next))
       );
@@ -28,7 +31,7 @@ export class TasksService {
 
   toggle(event:any){
     this.http
-      .put(`http://localhost:3000/todolist/${event.task.id}`, event.task)
+      .put(`${environment.apiUrl}/todolist/${event.task.id}`, event.task)
       .subscribe(() => {
         
         const value = this.store.value.todolist;
@@ -54,7 +57,7 @@ export class TasksService {
     };
 
     this.http
-      .post<ITask>('http://localhost:3000/todolist', novaTask)
+      .post<ITask>(`${environment.apiUrl}/todolist`, novaTask)
       .subscribe((taskCriada) => {
 
         const value = this.store.value.todolist;        
@@ -64,8 +67,8 @@ export class TasksService {
 
   remover(id: number) {
     this.http
-      .delete(`http://localhost:3000/todolist/${id}`)
-      .subscribe(() => {
+    .delete(`${environment.apiUrl}/todolist/${id}`)
+    .subscribe(() => {
 
         const value = this.store.value.todolist.filter(item => item.id !== id);
 

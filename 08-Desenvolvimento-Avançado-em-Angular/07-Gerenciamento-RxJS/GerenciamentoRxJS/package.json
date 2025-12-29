@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "mock": "json-server --watch mock/api.json --port 3000",
+    "dev": "concurrently \"npm run mock\" \"npm start\""
   },
   "private": true,
   "dependencies": {
@@ -30,6 +32,7 @@
     "@angular/language-service": "^19.2.15",
     "@types/node": "^20.4.2",
     "angular-eslint": "20.3.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.35.0",
     "json-server": "^1.0.0-beta.3",
     "ts-node": "^10.9.1",

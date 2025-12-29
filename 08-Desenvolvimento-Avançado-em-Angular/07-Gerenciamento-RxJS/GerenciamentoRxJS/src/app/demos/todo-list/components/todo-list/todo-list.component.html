@@ -21,28 +21,6 @@
                     
                     <img class="task-list-icon" src="/assets/imgTodo/lixo.png" (click)="excluir(item.id)">
                 </td>
-
-                <!--<td class="text-right">
-                    <span *ngIf="!item.finalizado && item.iniciado" 
-                          class="task-list__finalizado"
-                          (click)="toggleItem(i, 'finalizar')">
-                    </span>
-                    
-                    <span *ngIf="!item.finalizado && !item.iniciado" 
-                          class="task-list__iniciado"
-                          (click)="toggleItem(i, 'iniciar')">
-                        </span>
-                    
-                    <span *ngIf="item.finalizado && !item.iniciado" 
-                          class="task-list__retroceder"
-                          (click)="toggleItem(i, 'retomar')">
-                    </span>
-                    
-                    <span *ngIf="!item.finalizado && item.iniciado" 
-                           class="task-list__retroceder"
-                           (click)="toggleItem(i, 'cancelar')">
-                    </span>
-                </td>-->
             </tr>
         </tbody>
     </table>

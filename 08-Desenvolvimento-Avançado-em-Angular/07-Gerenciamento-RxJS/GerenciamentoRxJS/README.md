@@ -1,6 +1,6 @@
 # Gerenciamento de estado com RxJS - Angular 19
 
-Projeto de estudos utilizado no módulo **Gerenciamento de estado com RxJS (State Management)**, com foco em compreender como usar Observables, Subjects, BehaviorSubjects e padrões reativos para controlar o estado global e local de componentes no Angular 19.
+> Projeto de estudos utilizado no módulo **Gerenciamento de estado com RxJS (State Management)**, com foco em compreender como usar Observables, Subjects, BehaviorSubjects e padrões reativos para controlar o estado global e local de componentes no Angular 19.
 
 ---
 
@@ -18,34 +18,36 @@ Projeto de estudos utilizado no módulo **Gerenciamento de estado com RxJS (Stat
 ---
 
 ## Estrutura principal do projeto
-- todo-list:
-    - componentes: 
-        - tasks:
-            - `tasks.component.html` >> 
-            - `tasks.component.ts` >> 
-        - tasks-iniciadas:    
-            - `tasks.iniciadas.html` >> 
-            - `tasks.iniciadas.component.ts` >>
-        - tasks-finalizadas:      
-            - `tasks.finalizadas.html` >> 
-            - `tasks.finalizadas.component.ts` >> 
-        - todo-list:
-            - `todo-list.component.css` >> 
-            - `todo-list.component.html` >> 
-            - `todo-list.component.ts` >> 
-    - `task.ts` >>
-    - `todo.component.html` >>
-    - `todo.component.ts` >>
-    - `todo.db.json` >>
-    - `todo.module.ts` >>
-    - `todo.service.ts` >>
-
+- mock:
+    - `api.json` >>
+    - todo-list:
+        - components: 
+            - tasks:
+                - `tasks.component.html` >> 
+                - `tasks.component.ts` >> 
+            - tasks-iniciadas:    
+                - `tasks.iniciadas.html` >> 
+                - `tasks.iniciadas.component.ts` >>
+            - tasks-finalizadas:      
+                - `tasks.finalizadas.html` >> 
+                - `tasks.finalizadas.component.ts` >> 
+            - todo-list:
+                - `todo-list.component.css` >> 
+                - `todo-list.component.html` >> 
+                - `todo-list.component.ts` >> 
+        - `task.ts` >>
+        - `todo.component.html` >>
+        - `todo.component.ts` >>
+        - `todo.module.ts` >>
+        - `todo.service.ts` >>
+        - `todo.store.ts` >>
 ---
 
-## Arquivo de dados (JSON utilizado como "banco de dados")
-O projeto utiliza um arquivo JSON para simular uma fonte de dados local durante os estudos.
+## Arquivo de dados (Mock API com json-server)
+O projeto utiliza o json-server para simular uma API REST durante os estudos, permitindo realizar operações de GET, POST, PUT e DELETE sem a necessidade de um backend real.
 
-- Arquivo: `todo.db.json`
+O arquivo de dados está centralizado em um único arquivo JSON:
+- Arquivo: `mock/api.json`
 - Exemplo do conteúdo:
 ```
 {
@@ -71,15 +73,14 @@ O projeto utiliza um arquivo JSON para simular uma fonte de dados local durante 
     ]
 }
 ```
-- O arquivo é usado pelo json-server para criar um backend fake:
-```
-cd .\src\app\demos\todo-list\ 
-json-server todo.db.json
-```
+A URL base da API é configurada via environment: `apiUrl: 'http://localhost:3000'`
+
+> Observação importante:
+- Os IDs são gerados automaticamente pelo json-server e possuem formato alfanumérico, simulando o comportamento de APIs reais modernas (UUID).
 ---
 
 ## Preview do projeto
-<img src="./Print-GerenciamentoRxJS.png" alt="Tela do Projeto Gerenciamento RxJS" width="500"/>
+<img src="./Print_GerenciamentoRXJS.png" alt="Tela do Projeto Gerenciamento RxJS" width="500"/>
 
 ## Tecnologias
 - [Angular 19](https://angular.dev/)
@@ -90,7 +91,7 @@ json-server todo.db.json
 ## Como executar
 ```
 - npm install
-- ng serve
+- npm run dev
 - Acesse no navegador: http://localhost:4200
 ```
 ---
@@ -100,3 +101,4 @@ json-server todo.db.json
 - Útil como passo inicial para compreender padrões reativos.
 - A abordagem com RxJS é leve e adequada para casos em que NgRx seria exagerado.
 - Focar no entendimento profundo de subjects, streams e composição de operadores.
+- Obs.: Ao final do projeto unifiquei todos os arquivos json-server em apenas um: api.json, configurando para subir o json-server e o Angular juntos, facilitando o ambiente de desenvolvimento.
