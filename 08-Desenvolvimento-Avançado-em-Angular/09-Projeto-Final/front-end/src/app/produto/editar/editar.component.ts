@@ -1,21 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChildren, ElementRef, QueryList, AfterViewInit, inject, DestroyRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControlName, ReactiveFormsModule } from '@angular/forms';
-import { fromEvent, merge } from 'rxjs';
+import { Component, OnInit, ViewChildren, ElementRef, QueryList, AfterViewInit, inject } from '@angular/core';
+import { FormBuilder, Validators, FormControlName, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NgxBrazil, NgxBrazilValidators, NgxBrazilMASKS } from 'ngx-brazil';
+import { NgxBrazil } from 'ngx-brazil';
 
-import { DisplayMessage, GenericValidator, ValidationMessages } from '../../utils/generic-form-validation';
 import { CustomValidators } from '../../utils/custom-validators';
 import { CurrencyUtils } from '../../utils/currency-utils';
 
-import { Produto, Fornecedor } from '../models/produto';
 import { ProdutoService } from '../services/produto.service';
+import { ProdutoBaseComponent } from '../produto-form.base.component';
+
 import { environment } from '../../../environments/environment';
 
 
@@ -31,7 +30,7 @@ import { environment } from '../../../environments/environment';
   ],
   templateUrl: './editar.component.html'
 })
-export class EditarComponent implements OnInit, AfterViewInit  {
+export class EditarComponent extends ProdutoBaseComponent implements OnInit, AfterViewInit  {
 
   imagens: string = environment.imagensUrl;
 
@@ -40,8 +39,8 @@ export class EditarComponent implements OnInit, AfterViewInit  {
   private router = inject(Router);
   private toastr = inject(ToastrService);
   private route = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
   private spinner = inject(NgxSpinnerService);
+  override form!: FormGroup;
 
   @ViewChildren(FormControlName, { read: ElementRef })
     formInputElements!: QueryList<ElementRef>;
@@ -52,35 +51,6 @@ export class EditarComponent implements OnInit, AfterViewInit  {
   imagemNome!: string;
   imagemOriginalSrc!: string;
   //
-
-  produtoForm!: FormGroup;
-  produto = {} as Produto;
-
-  fornecedores: Fornecedor[] = [];
-
-  errors: any[] = [];
-  mudancasNaoSalvas = false;
-  displayMessage: DisplayMessage = {};
-
-  MASKS = NgxBrazilMASKS;
-
-  validationMessages: ValidationMessages = {
-    fornecedorId: { required: 'Escolha um fornecedor' },
-    nome: {
-      required: 'Informe o Nome',
-      minlength: 'Mínimo de 2 caracteres',
-      maxlength: 'Máximo de 200 caracteres'
-    },
-    descricao: {
-      required: 'Informe a Descrição',
-      minlength: 'Mínimo de 2 caracteres',
-      maxlength: 'Máximo de 1000 caracteres'
-    },
-    //imagem: { required: 'Informe a Imagem' },
-    valor: { required: 'Informe o Valor' }
-  };
-  genericValidator = new GenericValidator(this.validationMessages);
-
 
   ngOnInit(): void {
     this.criarForms();
@@ -105,13 +75,13 @@ export class EditarComponent implements OnInit, AfterViewInit  {
         error: () => this.spinner.hide()
       });
 
-    this.produtoForm = this.fb.group({
+    this.form = this.fb.group({
       fornecedorId: ['', [Validators.required]],
       nome: ['', [Validators.required, CustomValidators.rangeLength(2,200)]],
       descricao: ['', [Validators.required, CustomValidators.rangeLength(2,1000)]],
-      //imagem: [''],
+      imagem: [''],
       valor: ['', [Validators.required]],
-      ativo: [0]
+      ativo: [true]
     });
   }
 
@@ -119,7 +89,7 @@ export class EditarComponent implements OnInit, AfterViewInit  {
     const produto = this.produto;
     if (!produto) return;
 
-    this.produtoForm.patchValue({
+    this.form.patchValue({
       fornecedorId: this.produto.fornecedorId,
       id: this.produto.id,
       nome: this.produto.nome,
@@ -129,48 +99,23 @@ export class EditarComponent implements OnInit, AfterViewInit  {
     });
 
     // utilizar o [src] na imagem para evitar que se perca após post
-    //this.imagemOriginalSrc = this.imagens + this.produto.imagem;
     this.imagemOriginalSrc = this.produto.imagem
       ? this.imagens + this.produto.imagem
       : 'assets/sem-imagem.png';
   }
 
   ngAfterViewInit(): void {
-    this.configurarElementosValidacao();
-
-    this.produtoForm.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.validarFormulario();
-      });
-  }
-
-  configurarElementosValidacao() {
-    const controlBlurs = this.formInputElements
-      .toArray()
-      .map((formControl: ElementRef) =>
-        fromEvent(formControl.nativeElement, 'blur')
-      );
-
-    merge(...controlBlurs)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-      this.validarFormulario();
-    });
-  }
-
-
-  validarFormulario(): void {
-    this.displayMessage = this.genericValidator.processarMensagens(this.produtoForm);
-    this.mudancasNaoSalvas = this.produtoForm.dirty;
+    this.configurarValidacaoFormularioBase(
+      this.formInputElements
+    );
   }
 
   editarProduto(): void {
-    if (!this.produtoForm.dirty || this.produtoForm.invalid) return;
+    if (!this.form.dirty || this.form.invalid) return;
 
     this.spinner.show();
 
-    Object.assign(this.produto, this.produtoForm.getRawValue());
+    Object.assign(this.produto, this.form.getRawValue());
 
     if (this.imageBase64 && this.imagemNome) {
       this.produto.imagemUpload = this.imageBase64;
@@ -195,7 +140,7 @@ export class EditarComponent implements OnInit, AfterViewInit  {
   }
 
   processarSucesso(response: any): void {
-    this.produtoForm.reset();
+    this.form.reset();
     this.errors = [];
 
     const toast = this.toastr.success(

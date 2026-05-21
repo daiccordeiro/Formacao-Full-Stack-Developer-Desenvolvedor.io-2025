@@ -1,20 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChildren, ElementRef, QueryList, AfterViewInit, inject, DestroyRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControlName, ReactiveFormsModule } from '@angular/forms';
-import { fromEvent, merge } from 'rxjs';
+import { Component, OnInit, ViewChildren, ElementRef, QueryList, AfterViewInit, inject } from '@angular/core';
+import { FormBuilder, Validators, FormControlName, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ToastrService } from 'ngx-toastr';
 
 import { Router, RouterLink } from '@angular/router';
-import { NgxBrazil, NgxBrazilValidators, NgxBrazilMASKS } from 'ngx-brazil';
+import { NgxBrazil } from 'ngx-brazil';
 
-import { DisplayMessage, GenericValidator, ValidationMessages } from '../../utils/generic-form-validation';
 import { CustomValidators } from '../../utils/custom-validators';
 import { CurrencyUtils } from '../../utils/currency-utils';
 
-import { Produto, Fornecedor } from '../models/produto';
+import { Produto } from '../models/produto';
 import { ProdutoService } from '../services/produto.service';
+import { ProdutoBaseComponent } from '../produto-form.base.component';
 
 import { ImageCropperComponent, ImageCroppedEvent, ImageTransform, Dimensions } from 'ngx-image-cropper';
 
@@ -31,13 +30,13 @@ import { ImageCropperComponent, ImageCroppedEvent, ImageTransform, Dimensions } 
   ],
   templateUrl: './novo.component.html'
 })
-export class NovoComponent implements OnInit, AfterViewInit  {
+export class NovoComponent extends ProdutoBaseComponent implements OnInit, AfterViewInit  {
 
   private fb = inject(FormBuilder);
   private produtoService = inject(ProdutoService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-  private destroyRef = inject(DestroyRef);
+  override form!: FormGroup;
 
   @ViewChildren(FormControlName, { read: ElementRef })
     formInputElements!: QueryList<ElementRef>;
@@ -48,53 +47,19 @@ export class NovoComponent implements OnInit, AfterViewInit  {
   canvasRotation = 0;
   rotation = 0;
   scale = 1;
-  //showCropper = false;
   containWithinAspectRatio = false;
   transform: ImageTransform = {};
   imageURL!: string;
   imagemNome!: string;
   //
 
-  produtoForm!: FormGroup;
-  produto = {} as Produto;
-
-  fornecedores: Fornecedor[] = [];
-
-  errors: any[] = [];
-  mudancasNaoSalvas = false;
-  displayMessage: DisplayMessage = {};
-
-  MASKS = NgxBrazilMASKS;
-
-
-  validationMessages: ValidationMessages = {
-    fornecedorId: { required: 'Escolha um fornecedor' },
-    nome: {
-      required: 'Informe o Nome',
-      minlength: 'Mínimo de 2 caracteres',
-      maxlength: 'Máximo de 200 caracteres'
-    },
-    descricao: {
-      required: 'Informe a Descrição',
-      minlength: 'Mínimo de 2 caracteres',
-      maxlength: 'Máximo de 1000 caracteres'
-    },
-    imagem: { required: 'Informe a Imagem' },
-    valor: { required: 'Informe o Valor' }
-  };
-  genericValidator = new GenericValidator(this.validationMessages);
-
-
   ngOnInit(): void {
+    this.obterFornecedores();
     this.criarForms();
   }
 
   private criarForms(): void {
-    this.produtoService.obterFornecedores()
-      .subscribe(
-        fornecedores => this.fornecedores = fornecedores);
-
-    this.produtoForm = this.fb.group({
+    this.form = this.fb.group({
       fornecedorId: ['', [Validators.required]],
       nome: ['', [Validators.required, CustomValidators.rangeLength(2,200)]],
       descricao: ['', [Validators.required, CustomValidators.rangeLength(2,1000)]],
@@ -104,33 +69,22 @@ export class NovoComponent implements OnInit, AfterViewInit  {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.produtoForm.valueChanges
+  private obterFornecedores(): void {
+    this.produtoService.obterFornecedores()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.validarFormulario();
+      .subscribe({
+        next: fornecedores => this.fornecedores = fornecedores
       });
-
-    const controlBlurs = this.formInputElements
-      .toArray()
-      .map((formControl: ElementRef) =>
-        fromEvent(formControl.nativeElement, 'blur')
-      );
-
-    merge(...controlBlurs)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-      this.validarFormulario();
-    });
   }
 
-  validarFormulario(): void {
-    this.displayMessage = this.genericValidator.processarMensagens(this.produtoForm);
-    this.mudancasNaoSalvas = true;
+  ngAfterViewInit(): void {
+    this.configurarValidacaoFormularioBase(
+      this.formInputElements
+    );
   }
 
   adicionarProduto(): void {
-    if (!this.produtoForm.dirty) return;
+    if (!this.form.dirty) return;
 
     // Valida imagem primeiro
     if (!this.croppedImage) {
@@ -138,10 +92,10 @@ export class NovoComponent implements OnInit, AfterViewInit  {
       return;
     }
 
-    if (this.produtoForm.invalid) return;
+    if (this.form.invalid) return;
 
     const produtoNovo: Produto = {
-      ...this.produtoForm.value
+      ...this.form.value
     };
 
     // Adiciona imagem recortada
@@ -162,7 +116,7 @@ export class NovoComponent implements OnInit, AfterViewInit  {
   }
 
   processarSucesso(response: any): void {
-    this.produtoForm.reset();
+    this.form.reset();
     this.errors = [];
 
     const toast = this.toastr.success(
@@ -205,17 +159,18 @@ export class NovoComponent implements OnInit, AfterViewInit  {
   imageCropped(event: ImageCroppedEvent): void {
     if (event.base64) {
       this.croppedImage = event.base64;
-      this.produtoForm.get('imagem')?.setValue('ok');
+      this.form.get('imagem')?.setValue('ok');
     }
   }
 
-  imageLoaded() {
-  }
+  imageLoaded() { }
 
-  cropperReady(sourceImageDimensions: Dimensions) {
-  }
+  cropperReady(
+    sourceImageDimensions: Dimensions) { }
 
   loadImageFailed() {
-    this.errors.push('O formato do arquivo ' + this.imagemNome + ' não é aceito.');
+    this.errors.push(
+      'O formato do arquivo ' + this.imagemNome + ' não é aceito.'
+    );
   }
 }

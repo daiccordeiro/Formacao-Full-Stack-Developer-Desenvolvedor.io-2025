@@ -96,3 +96,45 @@ textarea {
   background-color: #5e35b1;
   border-color: #59359c;
 }
+
+/* Botões de Ação */
+.btn-action {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #212529;
+
+  background: white;
+  color: #212529;
+
+  transition: all .2s ease;
+}
+
+/* > Detalhes */
+.btn-action.detalhes:hover {
+  background: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+/* > Editar */
+.btn-action.editar:hover {
+  background: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+/* > Excluir */
+.btn-action.excluir:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.btn-action i {
+  font-size: .9rem;
+}

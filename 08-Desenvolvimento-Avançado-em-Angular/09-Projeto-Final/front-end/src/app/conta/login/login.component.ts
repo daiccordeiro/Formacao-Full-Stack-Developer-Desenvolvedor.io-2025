@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, FormControlName, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { fromEvent, merge, Observable } from 'rxjs';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren, inject, QueryList } from '@angular/core';
+import { FormGroup, FormBuilder, FormControlName, Validators, ReactiveFormsModule } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DisplayMessage, GenericValidator, ValidationMessages } from '../../utils/generic-form-validation';
+import {  ValidationMessages } from '../../utils/generic-form-validation';
 import { CustomValidators } from '../../utils/custom-validators';
-
-import { Usuario } from '../models/usuario';
-import { ContaService } from '../services/conta.service';
 import { UsuarioResponse } from '../../utils/localstorage';
+
+import { ContaService } from '../services/conta.service';
+import { Usuario } from '../models/usuario';
+import { FormBaseComponent } from '../../base-components/form-base.component';
 
 
 @Component({
@@ -25,29 +25,34 @@ import { UsuarioResponse } from '../../utils/localstorage';
   templateUrl: './login.component.html'
 })
 
-export class LoginComponent implements OnInit {
+export class LoginComponent extends FormBaseComponent implements OnInit, AfterViewInit {
 
- @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
+  private fb = inject(FormBuilder);
+  private contaService = inject(ContaService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  private route = inject(ActivatedRoute);
+  override form!: FormGroup;
+
+  @ViewChildren(FormControlName, { read: ElementRef })
+    formInputElements!: QueryList<ElementRef>;
 
   errors: any[] = [];
-  loginForm!: FormGroup;
   usuario!: Usuario;
-
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
-
   returnUrl!: string;
 
-  constructor(
-    private fb: FormBuilder,
-    private contaService: ContaService,
-    private router: Router,
-    private toastr: ToastrService,
-    private route: ActivatedRoute) {
+  ngOnInit(): void {
+    this.criarForms();
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
+  }
 
-    this.validationMessages = {
+  private criarForms(): void {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, CustomValidators.rangeLength(6,15)]]
+    });
+
+    const validationMessages: ValidationMessages = {
       email: {
         required: 'Informe o e-mail',
         email: 'Email Inválido'
@@ -58,48 +63,38 @@ export class LoginComponent implements OnInit {
       }
     };
 
-    this.genericValidator = new GenericValidator(this.validationMessages);
-  }
-
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, CustomValidators.rangeLength(6,15)]]
-    });
-
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    this.genericValidator = this.configurarMensagensValidacaoBase(
+        validationMessages);
   }
 
   ngAfterViewInit(): void {
-    const controlBlurs: Observable<any>[] =
-      this.formInputElements.map((formControl: ElementRef) =>
-        fromEvent(formControl.nativeElement, 'blur'));
-
-    // Evento disparado toda vez que 'perco' o foco do controle do formulário
-    merge(...controlBlurs).subscribe(() => {
-      this.displayMessage =
-        this.genericValidator.processarMensagens(this.loginForm);
-    });
+    this.configurarValidacaoFormularioBase(this.formInputElements
+    );
   }
 
   login(): void {
-    // Só processar o formulário se ele foi alterado (dirty) e é válido (valid)
-    if (this.loginForm.dirty && this.loginForm.valid) {
-      // Tipando o objeto usuario, com a Model Usuario
-      this.usuario = {
-        ...this.usuario,
-        ...this.loginForm.value
-      };
-
-      this.contaService.login(this.usuario).subscribe({
-        next: (sucesso: UsuarioResponse) => this.processarSucesso(sucesso),
-        error: falha => this.processarFalha(falha)
-      });
+    if (!this.form.dirty || !this.form.valid) {
+      return;
     }
+
+    this.usuario = {
+      ...this.usuario,
+      ...this.form.value
+    };
+
+    this.contaService.login(this.usuario)
+      .subscribe({
+        next: (sucesso: UsuarioResponse) =>
+          this.processarSucesso(sucesso),
+
+        error: falha =>
+          this.processarFalha(falha)
+      });
   }
 
-  processarSucesso(response: UsuarioResponse): void {
-    this.loginForm.reset();
+
+  private processarSucesso(response: UsuarioResponse): void {
+    this.form.reset();
     this.errors = [];
 
     this.contaService.salvarUsuarioLocal(response);
@@ -117,8 +112,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  processarFalha(fail: any): void {
-    this.errors = fail.error?.errors ?? [],
+  private processarFalha(fail: any): void {
+    this.errors = fail.error?.errors ?? [];
 
      this.toastr.error(
       'Ocorreu um erro ao processar a solicitação.',

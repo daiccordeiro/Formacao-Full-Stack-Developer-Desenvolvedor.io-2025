@@ -1,52 +1,55 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, FormControlName, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { fromEvent, merge, Observable } from 'rxjs';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren, QueryList, inject } from '@angular/core';
+import { FormGroup, FormBuilder, FormControlName, Validators, ReactiveFormsModule } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 
 import { Router } from '@angular/router';
 
-import { DisplayMessage, GenericValidator, ValidationMessages } from '../../utils/generic-form-validation';
+import { ValidationMessages } from '../../utils/generic-form-validation';
 import { CustomValidators } from '../../utils/custom-validators';
 
 import { Usuario } from '../models/usuario';
 import { ContaService } from '../services/conta.service';
+import { FormBaseComponent } from '../../base-components/form-base.component';
 
 
 @Component({
   selector: 'app-cadastro',
   standalone: true,
   imports: [
-    CommonModule,ReactiveFormsModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   templateUrl: './cadastro.component.html'
 })
 
-export class CadastroComponent implements OnInit, AfterViewInit {
+export class CadastroComponent extends FormBaseComponent implements OnInit, AfterViewInit {
+
+  private fb = inject(FormBuilder);
+  private contaService = inject(ContaService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  override form!: FormGroup;
 
   @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
+    formInputElements!: QueryList<ElementRef>;
 
   errors: any[] = [];
-  cadastroForm!: FormGroup;
   usuario!: Usuario;
 
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
+  ngOnInit(): void {
+    this.criarForms();
+  }
 
+  private criarForms(): void {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, CustomValidators.rangeLength(6,15)]],
+      confirmPassword: ['', [Validators.required, CustomValidators.rangeLength(6,15), CustomValidators.equalTo('password')]]
+    });
 
-  mudancasNaoSalvas!: boolean;
-
-
-  constructor(
-    private fb: FormBuilder,
-    private contaService: ContaService,
-    private router: Router,
-    private toastr: ToastrService) {
-
-    this.validationMessages = {
+   const validationMessages: ValidationMessages = {
       email: {
         required: 'Informe o e-mail',
         email: 'Email Inválido'
@@ -62,63 +65,46 @@ export class CadastroComponent implements OnInit, AfterViewInit {
       }
     };
 
-    this.genericValidator = new GenericValidator(this.validationMessages);
-  }
-
-  ngOnInit(): void {
-    this.cadastroForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, CustomValidators.rangeLength(6,15)]],
-      confirmPassword: ['', [Validators.required, CustomValidators.rangeLength(6,15), CustomValidators.equalTo('password')]]
-    });
+    this.genericValidator = this.configurarMensagensValidacaoBase(
+        validationMessages);
   }
 
   ngAfterViewInit(): void {
-    const controlBlurs: Observable<any>[] =
-      this.formInputElements.map((formControl: ElementRef) =>
-        fromEvent(formControl.nativeElement, 'blur'));
-
-    // Evento disparado toda vez que 'perco' o foco do controle do formulário
-    merge(...controlBlurs).subscribe(() => {
-      this.displayMessage =
-        this.genericValidator.processarMensagens(this.cadastroForm);
-
-        this.mudancasNaoSalvas = true;
-    });
+    this.configurarValidacaoFormularioBase(this.formInputElements
+    );
   }
 
   adicionarConta(): void {
-    // Só processar o formulário se ele foi alterado (dirty) e é válido (valid)
-    if (this.cadastroForm.dirty && this.cadastroForm.valid) {
-      // Tipando o objeto usuario, com a Model Usuario
-      this.usuario = {
-        ...this.usuario,
-        ...this.cadastroForm.value
-      };
+    if (!this.form.dirty || !this.form.valid) {
+      return;
+    }
 
-      this.contaService.cadastrarUsuario(this.usuario).subscribe({
-        next: sucesso => this.processarSucesso(sucesso),
+    this.usuario = {
+      ...this.usuario,
+      ...this.form.value
+    };
+
+    this.contaService.cadastrarUsuario(this.usuario)
+      .subscribe({
+        next: sucesso =>
+          this.processarSucesso(sucesso),
+
         error: falha => this.processarFalha(falha)
       });
 
-      this.mudancasNaoSalvas = false;
-    }
+    this.mudancasNaoSalvas = false;
   }
 
-  processarSucesso(response: any): void {
-    this.cadastroForm.reset();
+  private processarSucesso(response: any): void {
+    this.form.reset();
     this.errors = [];
 
-    //this.contaService.LocalStorage.salvarDadosLocaisUsuario(response);
     this.contaService.salvarUsuarioLocal(response);
 
     const toast = this.toastr.success(
       'Registro realizado com Sucesso!',
       'Bem-vindo!',
-      {
-        progressBar: true,
-        closeButton: true
-      }
+      { progressBar: true, closeButton: true }
     );
 
     toast?.onHidden.subscribe(() => {
@@ -126,16 +112,13 @@ export class CadastroComponent implements OnInit, AfterViewInit {
     });
   }
 
-  processarFalha(fail: any): void {
-    this.errors = fail.error?.errors ?? [],
+  private processarFalha(fail: any): void {
+    this.errors = fail.error?.errors ?? [];
 
      this.toastr.error(
       'Ocorreu um erro ao processar a solicitação.',
       'Erro',
-      {
-        progressBar: true,
-        closeButton: true
-      }
+      { progressBar: true, closeButton: true }
     );
   }
 }

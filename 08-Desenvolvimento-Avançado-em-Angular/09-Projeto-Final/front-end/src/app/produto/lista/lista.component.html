@@ -41,7 +41,7 @@
                     {{ produto.nomeFornecedor }}
                   </td>
                   <td>
-                    {{ produto.valor | currencyBrazil }}
+                    {{ produto.valor | currency:'BRL' }}
                   </td>
 
                   <td class="text-center">
@@ -54,15 +54,15 @@
 
                   <td class="text-end">
                     <div class="d-flex justify-content-end gap-2">
-                      <a class="btn btn-outline-secondary btn-sm"
+                      <a class="btn btn-action detalhes"
                         [routerLink]="['/produtos/detalhes', produto.id]" title="Detalhes">
                         <i class="fas fa-search"></i>
                       </a>
-                      <a class="btn btn-outline-danger btn-sm"
+                      <a class="btn btn-action editar"
                         [routerLink]="['/produtos/editar', produto.id]" title="Editar">
                         <i class="fas fa-edit"></i>
                       </a>
-                      <a class="btn btn-produto btn-sm"
+                      <a class="btn btn-action excluir"
                         [routerLink]="['/produtos/excluir', produto.id]" title="Excluir">
                         <i class="fas fa-trash"></i>
                       </a>
